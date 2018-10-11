@@ -1,0 +1,35 @@
+{
+  "type": "project",
+  "license": "proprietary",
+  "require": {
+    "php": "^7.2",
+    "ext-iconv": "*",
+    "ext-imagick": "*",
+    "ext-gd": "*",
+    "ext-pdo": "*",
+    "ext-pdo_sqlite": "*",
+    "ext-phar": "*",
+    "ext-tokenizer": "*",
+    "ext-fileinfo": "*",
+    "ext-ftp": "*",
+    "ext-openssl": "*",
+    "ext-exif": "*",
+    "ext-amqp": "*",
+    "ext-sodium": "*",
+    "ext-intl": "*",
+    "ext-gmp": "*",
+    "ext-curl": "*",
+    "ext-ctype": "*",
+    "ext-uuid": "*",
+    "ext-mbstring": "*",
+    "ext-apcu": "*",
+    "ext-pcre": "*",
+    "ext-xml": "*",
+    "ext-zlib": "*",
+    "ext-zip": "*",
+    "ext-json": "*",
+
+    "deployer/deployer": "^6.0",
+    "deployer/recipes": "^6.0"
+  }
+}
