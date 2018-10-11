@@ -82,7 +82,7 @@ task('shell:setup', function () {
 
 localhost('prod')
     ->set('writable_mode', 'chmod')
-    ->set('deploy_path', '/home/www-data')
+    ->set('deploy_path', $_ENV['APP_ROOT'] ?? '/var/www/html')
     ->set('repository', $_ENV['REPOSITORY'])
     ->set('branch', $_ENV['BRANCH'] ?? 'build')
 ;

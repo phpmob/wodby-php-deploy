@@ -1,21 +1,8 @@
-ARG FROM_TAG=7.2
+ARG FROM_TAG=7.2-4.7.2
 
 FROM wodby/php:${FROM_TAG}
 
 USER root
-
-# php ext
-RUN set -xe; \
-    apk add --no-cache --virtual .build-deps \
-    $PHPIZE_DEPS \
-    util-linux-dev\
-    ;\
-    pecl install uuid \
-    ;\
-    docker-php-ext-enable uuid \
-    ;\
-    apk del --purge .build-deps; \
-    pecl clear-cache;
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
 COPY composer.json /var
