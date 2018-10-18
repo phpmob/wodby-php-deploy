@@ -106,6 +106,16 @@ task('cachetool:clear:apcu', function () {
     run("{{bin/php}} {{bin/cachetool}} apcu:cache:clear system {$options}");
 });
 
+task('geoip:update', function () {
+    $sharedPath = "{{deploy_path}}/shared";
+
+    run("mkdir /tmp/geoip && cd /tmp/geoip && curl http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz | tar -xz");
+
+    run("rm -rf $sharedPath/geoip && mkdir -p $sharedPath/geoip");
+    run('cd /tmp/geoip && cd $(ls -d */|head -n 1) && mv GeoLite2-City.mmdb '.$sharedPath.'/geoip');
+    //run("cd $sharedPath/geoip && ls -al");
+});
+
 task('test', function() {
 var_dump($_ENV);
 });
@@ -144,4 +154,8 @@ if ($_ENV['SHELL_SETUP'] ?? 0) {
 
 if (1 === intval($_ENV['YARN_BUILD'] ?? 0)) {
     after('deploy:vendors', 'yarn:build');
+}
+
+if (1 === intval($_ENV['UPDATE_GEOIP'] ?? 0)) {
+    after('deploy', 'geoip:update');
 }
