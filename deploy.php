@@ -125,7 +125,7 @@ set('bin/yarn', function () {
 });
 
 task('yarn:build', function() {
-    run('cd {{release_path}} && {{bin/yarn}} run build');
+    run('cd {{release_path}} && {{bin/yarn}} install && {{bin/yarn}} run build');
 });
 
 if ($_ENV['CF_API_KEY'] ?? null) {
