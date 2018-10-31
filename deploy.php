@@ -46,9 +46,6 @@ task('deploy', [
     'deploy:update_code',
     'deploy:shared',
     'deploy:vendors',
-    'deploy:cache:clear',
-    'deploy:cache:warmup',
-    'deploy:writable',
     'deploy:symlink',
     'deploy:unlock',
     'database:migrate',
@@ -146,10 +143,12 @@ if (1 === intval($_ENV['DEPLOY_APCu_ON'] ?? 0)) {
 
 if (1 === intval($_ENV['DEPLOY_DATA_SETUP'] ?? 0)) {
     after('deploy:vendors', 'database:setup');
+    after('deploy:vendors', 'deploy:writable');
 }
 
 if ($_ENV['DEPLOY_CMD_SETUP'] ?? 0) {
     after('deploy:vendors', 'cmd:setup');
+    after('deploy:vendors', 'deploy:writable');
 }
 
 if ($_ENV['DEPLOY_SHELL_SETUP'] ?? 0) {
