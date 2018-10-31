@@ -7,16 +7,16 @@ require_once 'recipe/cloudflare.php';
 require_once 'recipe/cachetool.php';
 
 set('writable_chmod_mode', '0777');
-set('cachetool', $_ENV['CACHE_TOOL_CGI_URL'] ?? '127.0.0.1:9000');
+set('cachetool', $_ENV['DEPLOY_CACHE_TOOL_CGI_URL'] ?? '127.0.0.1:9000');
 set('cloudflare', [
-    'email' => $_ENV['CF_EMAIL'] ?? null,
-    'api_key' => $_ENV['CF_API_KEY'] ?? null,
-    'domain' => $_ENV['CF_DOMAIN'] ?? null,
+    'email' => $_ENV['DEPLOY_CF_EMAIL'] ?? null,
+    'api_key' => $_ENV['DEPLOY_CF_API_KEY'] ?? null,
+    'domain' => $_ENV['DEPLOY_CF_DOMAIN'] ?? null,
 ]);
 
-set('shared_dirs', explode(',', $_ENV['SHARED_DIRS'] ?? 'var/log,var/sessions,var/media'));
-set('shared_files', ['.env']);
-set('writable_dirs', ['var']);
+set('shared_dirs', explode(',', $_ENV['DEPLOY_SHARED_DIRS'] ?? 'var/log,var/sessions,var/media'));
+set('shared_files', explode(',', $_ENV['DEPLOY_SHARED_FILES'] ?? '.env'));
+set('writable_dirs', explode(',', $_ENV['DEPLOY_WRITABLE_DIRS'] ?? 'var'));
 
 set('bin/console', function () {
     return parse('{{bin/php}} {{release_path}}/bin/console --no-interaction');
@@ -73,18 +73,18 @@ task('database:setup', function () {
 });
 
 task('cmd:setup', function () {
-    run('{{bin/console}} ' . $_ENV['CMD_SETUP']);
+    run('{{bin/console}} ' . $_ENV['DEPLOY_CMD_SETUP']);
 });
 
 task('shell:setup', function () {
-    run($_ENV['SHELL_SETUP']);
+    run('cd {{release_path}} && ' . $_ENV['DEPLOY_SHELL_SETUP']);
 });
 
 localhost('prod')
     ->set('writable_mode', 'chmod')
-    ->set('deploy_path', $_ENV['APP_ROOT'] ?? '/var/www/html')
-    ->set('repository', $_ENV['REPOSITORY'])
-    ->set('branch', $_ENV['BRANCH'] ?? 'build')
+    ->set('deploy_path', $_ENV['DEPLOY_APP_ROOT'] ?? '/var/www/html')
+    ->set('repository', $_ENV['DEPLOY_REPOSITORY'])
+    ->set('branch', $_ENV['DEPLOY_BRANCH'] ?? 'build')
 ;
 
 desc('Clearing APCu system cache');
@@ -128,38 +128,38 @@ task('yarn:build', function() {
     run('cd {{release_path}} && {{bin/yarn}} install && {{bin/yarn}} run build');
 });
 
-if ($_ENV['CF_API_KEY'] ?? null) {
+if ($_ENV['DEPLOY_CF_API_KEY'] ?? null) {
     after('deploy:cache:clear', 'deploy:cloudflare');
 }
 
-if (1 === intval($_ENV['OPcode_ON'] ?? 0)) {
+if (1 === intval($_ENV['DEPLOY_OPcode_ON'] ?? 0)) {
     after('deploy:cache:clear', 'cachetool:clear:opcache');
 }
 
-if (1 === intval($_ENV['APC_ON'] ?? 0)) {
+if (1 === intval($_ENV['DEPLOY_APC_ON'] ?? 0)) {
     after('deploy:cache:clear', 'cachetool:clear:apc');
 }
 
-if (1 === intval($_ENV['APCu_ON'] ?? 0)) {
+if (1 === intval($_ENV['DEPLOY_APCu_ON'] ?? 0)) {
     after('deploy:cache:clear', 'cachetool:clear:apcu');
 }
 
-if (1 === intval($_ENV['DATA_SETUP'] ?? 0)) {
+if (1 === intval($_ENV['DEPLOY_DATA_SETUP'] ?? 0)) {
     after('deploy:vendors', 'database:setup');
 }
 
-if ($_ENV['CMD_SETUP'] ?? 0) {
+if ($_ENV['DEPLOY_CMD_SETUP'] ?? 0) {
     after('deploy:vendors', 'cmd:setup');
 }
 
-if ($_ENV['SHELL_SETUP'] ?? 0) {
+if ($_ENV['DEPLOY_SHELL_SETUP'] ?? 0) {
     after('deploy:vendors', 'shell:setup');
 }
 
-if (1 === intval($_ENV['YARN_BUILD'] ?? 0)) {
+if (1 === intval($_ENV['DEPLOY_YARN_BUILD'] ?? 0)) {
     after('deploy:vendors', 'yarn:build');
 }
 
-if (1 === intval($_ENV['UPDATE_GEOIP'] ?? 0)) {
+if (1 === intval($_ENV['DEPLOY_UPDATE_GEOIP'] ?? 0)) {
     after('deploy', 'geoip:update');
 }
