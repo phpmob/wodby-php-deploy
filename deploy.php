@@ -15,8 +15,8 @@ set('cloudflare', [
 ]);
 
 set('shared_dirs', explode(',', $_ENV['DEPLOY_SHARED_DIRS'] ?? 'var/log,var/sessions,var/media'));
-set('shared_files', explode(',', $_ENV['DEPLOY_SHARED_FILES'] ?? '.env'));
-set('writable_dirs', explode(',', $_ENV['DEPLOY_WRITABLE_DIRS'] ?? 'var'));
+set('shared_files', explode(',', $_ENV['DEPLOY_SHARED_FILES'] ?? '.env.prod'));
+set('writable_dirs', explode(',', $_ENV['DEPLOY_WRITABLE_DIRS'] ?? 'var,{{deploy_path}}/shared/var/log,{{deploy_path}}/shared/var/sessions,{{deploy_path}}/shared/var/media'));
 
 set('bin/console', function () {
     return parse('{{bin/php}} {{release_path}}/bin/console --no-interaction');
