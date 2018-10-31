@@ -15,7 +15,7 @@ set('cloudflare', [
 ]);
 
 set('shared_dirs', explode(',', $_ENV['DEPLOY_SHARED_DIRS'] ?? 'var/log,var/sessions,var/media'));
-set('shared_files', explode(',', $_ENV['DEPLOY_SHARED_FILES'] ?? '.env.prod'));
+set('shared_files', explode(',', $_ENV['DEPLOY_SHARED_FILES'] ?? '.env'));
 set('writable_dirs', explode(',', $_ENV['DEPLOY_WRITABLE_DIRS'] ?? 'var,{{deploy_path}}/shared/var/log,{{deploy_path}}/shared/var/sessions,{{deploy_path}}/shared/var/media'));
 
 set('bin/console', function () {
@@ -162,4 +162,12 @@ if (1 === intval($_ENV['DEPLOY_YARN_BUILD'] ?? 0)) {
 
 if (1 === intval($_ENV['DEPLOY_UPDATE_GEOIP'] ?? 0)) {
     after('deploy', 'geoip:update');
+}
+
+task('env_file:update', function() {
+    run('cat {{release_path}}/' . $_ENV['DEPLOY_PROD_ENV_FILE'] . ' >> {{deploy_path}}/shared/.env');
+});
+
+if (($_ENV['DEPLOY_PROD_ENV_FILE'] ?? 0)) {
+    after('deploy:shared', 'env_file:update');
 }
