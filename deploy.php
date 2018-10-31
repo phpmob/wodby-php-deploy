@@ -120,8 +120,12 @@ task('test', function() {
 var_dump($_ENV);
 });
 
+set('bin/yarn', function () {
+    return run('which yarn');
+});
+
 task('yarn:build', function() {
-    run('yarn run build');
+    run('cd {{release_path}} && {{bin/yarn}} run build');
 });
 
 if ($_ENV['CF_API_KEY'] ?? null) {
