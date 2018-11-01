@@ -125,7 +125,7 @@ task('yarn:build', function() {
     run('cd {{release_path}} && {{bin/yarn}} install && {{bin/yarn}} run build');
 });
 
-if ($_ENV['DEPLOY_CF_API_KEY'] ?? null) {
+if (($_ENV['DEPLOY_CF_API_KEY'] ?? 0)) {
     after('deploy:cache:clear', 'deploy:cloudflare');
 }
 
@@ -146,12 +146,12 @@ if (1 === intval($_ENV['DEPLOY_DATA_SETUP'] ?? 0)) {
     after('deploy:vendors', 'deploy:writable');
 }
 
-if ($_ENV['DEPLOY_CMD_SETUP'] ?? 0) {
+if (($_ENV['DEPLOY_CMD_SETUP'] ?? 0)) {
     after('deploy:vendors', 'cmd:setup');
     after('deploy:vendors', 'deploy:writable');
 }
 
-if ($_ENV['DEPLOY_SHELL_SETUP'] ?? 0) {
+if (($_ENV['DEPLOY_SHELL_SETUP'] ?? 0)) {
     after('deploy:vendors', 'shell:setup');
 }
 
