@@ -164,7 +164,7 @@ if (1 === intval($_ENV['DEPLOY_UPDATE_GEOIP'] ?? 0)) {
 }
 
 task('env_file:update', function() {
-    run('cat {{release_path}}/' . $_ENV['DEPLOY_PROD_ENV_FILE'] . ' >> {{deploy_path}}/shared/.env');
+    run('cat {{release_path}}/' . $_ENV['DEPLOY_PROD_ENV_FILE'] . ' > {{deploy_path}}/shared/.env');
 });
 
 if (($_ENV['DEPLOY_PROD_ENV_FILE'] ?? 0)) {
